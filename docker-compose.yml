@@ -1,0 +1,48 @@
+services:
+  redis:
+    image: redis
+    container_name: articleManagementSystem-redis
+    networks:
+      - articleManagementSystem-net
+  mysql:
+    image: mysql:8
+    container_name: articleManagementSystem-mysql
+    ports:
+      - "3308:3306"
+    environment:
+      TZ: Asia/Taipei
+      MYSQL_ROOT_PASSWORD: 321321321
+    volumes:
+      - "/usr/local/app2/mysql/conf:/etc/mysql/conf.d"
+      - "/usr/local/app2/mysql/data:/var/lib/mysql"
+      - "/usr/local/app2/mysql/init:/docker-entrypoint-initdb.d"
+    networks:
+      - articleManagementSystem-net
+    depends_on:
+      - redis
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: articleManagementSystem-backend
+    ports:
+      - "8081:8081"
+    networks:
+      - articleManagementSystem-net
+    depends_on:
+      - mysql
+  frontend:
+    image: nginx:1.28.0
+    container_name: articleManagementSystem-frontend
+    ports:
+      - "81:81"
+    volumes:
+      - "/usr/local/app2/nginx/conf/nginx.conf:/etc/nginx/nginx.conf"
+      - "/usr/local/app2/nginx/html:/usr/share/nginx/html"
+    depends_on:
+      - backend
+    networks:
+      - articleManagementSystem-net
+networks:
+  articleManagementSystem-net:
+    name: articleManagementSystem
