@@ -52,6 +52,7 @@ if [ `whoami` = "root" ];then
 	      echo "[2] 啟動專案..."
 	      docker compose up -d
 	      echo "專案已啟動。"
+	      echo "專案網址: http://$(hostname -I | awk '{print $1}'):81"
 	      ;;
 	    "3")
 	      echo "[3] 關閉專案..."
