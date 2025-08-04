@@ -1,18 +1,9 @@
 # 說明
 
-[artticleManagementSystem.jar](https://mega.nz/file/h5JyQL6Y#plLNKqQu7008ycIZyJ-Zktx1j9OZVdbaDyh7-j4UehI)
+1. 下載好將Github抓下的 <mark>article-management-system-complete</mark> 資料夾內的所有檔案放在Linux的右方路徑 <mark>/usr/local/app2</mark>
 
-[jdk17.tar.gz](https://mega.nz/file/F4gGmBjC#TJqBitRWbdWubIB7fRTsCzLQoe0XxkYWWWCKXXc-Be4) - jdk-17.0.12
+2. 以<mark>sh project-up-down.sh</mark>執行腳本,新環境運行請先執行 0 和 1
 
-Linux環境可以使用MEGA的指令下載
+3. 專案啟動後以 <mark>ip addr</mark> 查看Linux ip
 
-```
-    # 先安裝工具
-    sudo apt install megatools -y
-
-    # 下載 jdk17.tar.gz
-    megatools dl 'https://mega.nz/file/F4gGmBjC#TJqBitRWbdWubIB7fRTsCzLQoe0XxkYWWWCKXXc-Be4'
-
-    # 下載 artticleManagementSystem.jar
-    megatools dl 'https://mega.nz/file/h5JyQL6Y#plLNKqQu7008ycIZyJ-Zktx1j9OZVdbaDyh7-j4UehI'
-```
+4. 瀏覽器貼上查詢到的ip後方加上 <mark>port:81</mark> 就能瀏覽了
