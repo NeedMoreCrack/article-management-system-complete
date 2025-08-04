@@ -1,67 +1,74 @@
 #!/bin/bash
 
-echo "Choose option :"
-echo "0.install docker tools"
-echo "1.download project files"
-echo "2.startup project"
-echo "3.shutdown project"
-read enter
-case $enter in
-	"0")
-        echo "choose 0 install tools..."
-        set -e  # Stop execution on error
+set -e  # 一旦出錯就退出
 
-        # Check if script is run as root
-        if [ "$EUID" -ne 0 ]; then
-                echo "Error: This script must be run as root."
-                exit 1
-        fi
+# 檢查是否為 root
+if [ "$EUID" -ne 0 ]; then
+  echo "請以 root 權限執行此腳本。"
+  exit 1
+fi
 
-        echo "Updating package list..."
-        apt update
+while true; do
+  echo "============================"
+  echo "請選擇操作："
+  echo "0. 安裝 Docker 相關工具"
+  echo "1. 下載專案檔案"
+  echo "2. 啟動專案"
+  echo "3. 關閉專案"
+  echo "4. 離開"
+  echo "============================"
+  read -p "請輸入選項 [0-4]：" choice
 
-        echo "Installing Docker and related tools..."
-        apt install -y \
-                docker.io \
-                docker-compose-v2 \
-                docker-buildx
+  case "$choice" in
+    "0")
+      echo "[0] 安裝 Docker 工具中..."
+      apt update
+      apt install -y \
+        docker.io \
+        docker-compose-v2 \
+        docker-buildx \
+        megatools
 
-        if command -v systemctl >/dev/null 2>&1; then
-                echo "Enabling and starting Docker service..."
-                systemctl enable --now docker
-        else
-                echo "Skipping systemctl (not available in this environment)..."
-        fi
+      if command -v systemctl >/dev/null 2>&1; then
+        echo "啟用並啟動 Docker 服務..."
+        systemctl enable --now docker
+      else
+        echo "未找到 systemctl，跳過服務啟動..."
+      fi
 
-        docker pull nginx:1.28.0
-        echo "Pulling mysql:8 image..."
-        docker pull mysql:8
-
-        echo "Pulling redis image..."
-        docker pull redis
-
-        echo "Installation and image pulling completed."
-        ;;
+      echo "拉取必要的映像檔..."
+      docker pull nginx:1.28.0
+      docker pull mysql:8
+      docker pull redis
+      echo "工具與映像檔安裝完成。"
+      ;;
     "1")
-        echo "choose 1 download project file..."
-        echo "download megatools..."
-        sudo apt install megatools -y
+      echo "[1] 開始下載專案檔案..."
+      echo "下載 JDK17..."
+      megatools dl 'https://mega.nz/file/F4gGmBjC#TJqBitRWbdWubIB7fRTsCzLQoe0XxkYWWWCKXXc-Be4'
 
-        echo "download JDK17..."
-        megatools dl 'https://mega.nz/file/F4gGmBjC#TJqBitRWbdWubIB7fRTsCzLQoe0XxkYWWWCKXXc-Be4'
+      echo "下載 articleManagementSystem.jar..."
+      megatools dl 'https://mega.nz/file/h5JyQL6Y#plLNKqQu7008ycIZyJ-Zktx1j9OZVdbaDyh7-j4UehI'
 
-        echo "download artticleManagementSystem.jar..."
-        megatools dl 'https://mega.nz/file/h5JyQL6Y#plLNKqQu7008ycIZyJ-Zktx1j9OZVdbaDyh7-j4UehI'
-        echo "done"
-        ;;
+      echo "檔案下載完成。"
+      ;;
     "2")
-        echo "choose 2 startup project..."
-        sudo docker compose up -d
-        echo "done"
-        ;;
+      echo "[2] 啟動專案..."
+      docker compose up -d
+      echo "專案已啟動。"
+      ;;
     "3")
-        echo "choose 3 shutdown project..."
-        sudo docker compose down
-        echo "done"
-        ;;
-esac
+      echo "[3] 關閉專案..."
+      docker compose down
+      echo "專案已關閉。"
+      ;;
+    "4")
+      echo "離開腳本，Bye~"
+      exit 0
+      ;;
+    *)
+      echo "無效選項，請重新輸入。"
+      ;;
+  esac
+done
+
